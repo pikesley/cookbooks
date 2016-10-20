@@ -1,0 +1,7 @@
+DEPENDENCIES
+  wen-deploy
+    path: .
+    metadata: true
+
+GRAPH
+  wen-deploy (0.1.0)
