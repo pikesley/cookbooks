@@ -11,5 +11,5 @@ task :publish do
   g = Git.open '../'
   g.add '.'
   g.commit "new #{here} cookbook version"
-  g.push
+  g.push g.remote 'gh-pages'
 end
