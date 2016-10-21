@@ -4,4 +4,6 @@ DEPENDENCIES
     metadata: true
 
 GRAPH
+  chef-solo (0.1.2)
   wen-deploy (0.1.0)
+    chef-solo (>= 0.0.0)

@@ -1,3 +1,5 @@
+include_recipe 'wen-deploy::chef-client'
+
 PROJECT_ROOT = '/home/pi/wen'
 USER = 'pi'
 
@@ -50,6 +52,14 @@ bash 'set timezone' do
   EOF
 end
 
+template '/home/pi/pivertise.sh' do
+  source 'pivertise.sh.erb'
+  variables ({
+    hostname: node['hostname'],
+    address: node['ipaddress']
+  })
+end
+
 deploy_revision PROJECT_ROOT do
   repo 'https://github.com/pikesley/wen'
   revision 'master'
@@ -67,11 +77,15 @@ deploy_revision PROJECT_ROOT do
       EOF
     end
 
-    remote_file '/etc/nginx/sites-enabled/wen' do
-      source "file://#{release_path}/scripts/vhost"
+    template '/etc/nginx/sites-enabled/wen' do
+      source 'vhost.erb'
+      variables ({
+        root: release_path,
+        wen_port: 8080
+      })
     end
 
-    remote_file '/etc/nginx/sites-enabled/default' do
+    file '/etc/nginx/sites-enabled/default' do
       action :delete
     end
 
@@ -84,12 +98,18 @@ deploy_revision PROJECT_ROOT do
       EOF
     end
 
-    remote_file '/etc/systemd/system/timekeeper.service' do
-      source "file://#{release_path}/scripts/timekeeper.service"
+    template '/etc/systemd/system/timekeeper.service' do
+      source 'timekeeper.service.erb'
+      variables ({
+        root: release_path
+      })
     end
 
-    remote_file '/etc/systemd/system/pivertiser.service' do
-      source "file://#{release_path}/scripts/pivertiser.service"
+    template '/etc/systemd/system/pivertiser.service' do
+      source 'pivertiser.service.erb'
+      variables ({
+        root: release_path
+      })
     end
 
     [
@@ -99,6 +119,7 @@ deploy_revision PROJECT_ROOT do
       'pivertiser.service'
     ].each do |service|
       service service do
+        provider Chef::Provider::Service::Systemd
         action [:enable, :restart]
       end
     end

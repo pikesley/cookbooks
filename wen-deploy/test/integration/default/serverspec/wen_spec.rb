@@ -96,10 +96,8 @@ context 'nginx' do
     its(:content) { should match /upstream wen {
   server 127.0.0.1:8080;
 }/}
-    its(:content) { should contain 'root /home/pi/wen/public;' }
     its(:content) { should match /location \@wen {
     include proxy_params;
-
     proxy_pass http:\/\/wen;
   }/}
   end
@@ -176,5 +174,37 @@ context 'operating clock' do
       response = HTTParty.get 'http://localhost/colours'
       expect(response).to match /<title>Colours<\/title>/
     end
+  end
+end
+
+context 'chef client' do
+  describe file '/var/spool/cron/crontabs/root' do
+    it { should be_file }
+    its(:content) { should contain '0 * * * * /usr/bin/chef-solo -c /etc/chef/solo.rb' }
+  end
+
+  describe file '/var/log/chef' do
+    it { should be_directory }
+  end
+
+  describe service 'chef-client' do
+    it { should_not be_running }
+  end
+
+  describe file '/etc/chef/client.rb' do
+    it { should be_file }
+    its(:content) { should contain "chef_zero.enabled true" }
+    its(:content) { should contain "local_mode true" }
+  end
+
+  describe file '/etc/chef/solo.rb' do
+    it { should be_file }
+    its(:content) { should contain "recipe_url 'http://pikesley.org/cookbooks/wen-deploy.tgz" }
+    its(:content) { should contain "json_attribs '/etc/chef/chef.json'" }
+  end
+
+  describe file '/etc/chef/chef.json' do
+    it { should be_file }
+    its(:content) { should contain '{"run_list":\["recipe\[wen-deploy\]"\]}' }
   end
 end

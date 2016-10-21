@@ -1,0 +1,14 @@
+[Unit]
+Description = Hit the clock URL
+After       = syslog.target
+
+[Service]
+User         = pi
+Type         = simple
+ExecStart    = <%= @root %>/scripts/hit-clock.sh
+KillMode     = mixed
+RestartSec   = 10
+Restart      = always
+
+[Install]
+WantedBy     = multi-user.target

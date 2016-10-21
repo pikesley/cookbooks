@@ -1,0 +1,31 @@
+upstream wen {
+  server 127.0.0.1:<%= @wen_port %>;
+}
+
+server {
+  listen 80;
+
+  root <%= @root %>/public;
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log info;
+
+  error_page  500 /500.html;
+  error_page  502 /502.html;
+
+  location = /500.html {
+    root <%= @root %>/public/html;
+  }
+
+  location = /502.html {
+    root <%= @root %>/public/html;
+  }
+
+  location / {
+    try_files $uri @wen;
+  }
+
+  location @wen {
+    include proxy_params;
+    proxy_pass http://wen;
+  }
+}

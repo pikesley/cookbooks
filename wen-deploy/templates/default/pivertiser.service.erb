@@ -1,0 +1,10 @@
+[Unit]
+Description = Advertise our IP
+After       = network-online.target
+
+[Service]
+Type        = oneshot
+ExecStart   = <%= @root %>/scripts/pivertise.sh
+
+[Install]
+WantedBy    = multi-user.target
