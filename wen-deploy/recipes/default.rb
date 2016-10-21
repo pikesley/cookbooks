@@ -107,6 +107,7 @@ deploy_revision PROJECT_ROOT do
 
     template '/etc/systemd/system/pivertiser.service' do
       source 'pivertiser.service.erb'
+      mode 0755
       variables ({
         root: release_path
       })
