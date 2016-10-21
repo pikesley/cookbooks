@@ -1,11 +1,15 @@
+here = File.basename FileUtils.pwd
+
 desc 'bundle up this cookbook and its dependencies'
 task :package do
-  here = File.basename FileUtils.pwd
   `berks package ../#{here}.tgz`
 end
 
 desc 'publish to github'
 task :publish do
-  require "pry" ; binding.pry
-  
+  require 'git'
+  g = Git.open '../'
+  g.add '.'
+  g.commit "new #{here} cookbook version"
+  g.push
 end
