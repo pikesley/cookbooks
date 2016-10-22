@@ -52,8 +52,20 @@ bash 'set timezone' do
   EOF
 end
 
+directory '/var/log/wen' do
+  action :create
+end
+
+template '/etc/systemd/system/pivertiser.service' do
+  source 'pivertiser.service.erb'
+  variables ({
+    root: "/home/#{USER}"
+  })
+end
+
 template '/home/pi/pivertise.sh' do
   source 'pivertise.sh.erb'
+  mode 0755
   variables ({
     hostname: node['hostname'],
     address: node['ipaddress']
@@ -105,12 +117,8 @@ deploy_revision PROJECT_ROOT do
       })
     end
 
-    template '/etc/systemd/system/pivertiser.service' do
-      source 'pivertiser.service.erb'
-      mode 0755
-      variables ({
-        root: release_path
-      })
+    bash 'reload systemd scripts' do
+      code 'systemctl daemon-reload'
     end
 
     [

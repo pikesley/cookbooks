@@ -5,5 +5,5 @@ DEPENDENCIES
 
 GRAPH
   chef-solo (0.1.2)
-  wen-deploy (0.1.0)
+  wen-deploy (0.1.1)
     chef-solo (>= 0.0.0)

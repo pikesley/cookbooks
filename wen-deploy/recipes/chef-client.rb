@@ -31,8 +31,14 @@ file '/etc/chef/chef.json' do
   }.to_json}"
 end
 
-file '/var/spool/cron/crontabs/root' do
-  content "#{node['chef_client']['cron']['minute']} #{node['chef_client']['cron']['minute']} * * * /usr/bin/chef-solo -c /etc/chef/solo.rb"
+#file '/var/spool/cron/crontabs/root' do
+#  content "#{node['chef_client']['cron']['minute']} #{node['chef_client']['cron']['hour']} * * * /usr/bin/chef-solo -c /etc/chef/solo.rb"
+#end
+
+cron 'chef-run' do
+  minute '*/5'
+  hour '*'
+  command '/usr/bin/chef-solo -c /etc/chef/solo.rb -L /var/chef/client.log'
 end
 
 service 'chef-client' do

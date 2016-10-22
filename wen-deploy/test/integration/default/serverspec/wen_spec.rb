@@ -88,6 +88,11 @@ context 'code' do
     it { should be_file }
     it { should be_executable }
   end
+
+  describe file '/var/log/wen/' do
+    it { should be_directory }
+    it { should be_writable.by_user('root') }
+  end
 end
 
 context 'nginx' do
@@ -152,10 +157,16 @@ context 'wen services' do
     describe file '/etc/systemd/system/pivertiser.service' do
       it { should be_file }
       its(:content) { should contain 'After       = network-online.target' }
+      its(:content) { should contain 'ExecStart   = /home/pi/pivertise.sh' }
     end
 
     describe service 'pivertiser.service' do
       it { should be_enabled }
+    end
+
+    describe file '/home/pi/pivertise.sh' do
+      it { should be_file }
+      it { should be_executable }
     end
   end
 end
@@ -180,7 +191,7 @@ end
 context 'chef client' do
   describe file '/var/spool/cron/crontabs/root' do
     it { should be_file }
-    its(:content) { should contain '0 * * * * /usr/bin/chef-solo -c /etc/chef/solo.rb' }
+    its(:content) { should contain '\*/5 * * * * /usr/bin/chef-solo -c /etc/chef/solo.rb' }
   end
 
   describe file '/var/log/chef' do
