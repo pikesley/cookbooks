@@ -1,5 +1,3 @@
-#include_recipe 'chef-solo'
-
 directory '/etc/chef' do
   action :create
 end
@@ -8,32 +6,17 @@ directory '/var/log/chef' do
   action :create
 end
 
-file '/etc/chef/solo.rb' do
-  content <<-EOF
-  recipe_url 'http://pikesley.org/cookbooks/wen-deploy.tgz'
-  json_attribs '/etc/chef/chef.json'
-  local_mode true
-  EOF
+template '/etc/chef/solo.rb' do
+  source 'solo.rb.erb'
 end
 
-file '/etc/chef/client.rb' do
-  content <<-EOF
-  chef_zero.enabled true
-  local_mode true
-  EOF
+template '/etc/chef/client.rb' do
+  source 'client.rb.erb'
 end
 
-file '/etc/chef/chef.json' do
-  content "#{{
-    run_list: [
-      'recipe[wen-deploy]'
-    ]
-  }.to_json}"
+template '/etc/chef/chef.json' do
+  source 'chef.json.erb'
 end
-
-#file '/var/spool/cron/crontabs/root' do
-#  content "#{node['chef_client']['cron']['minute']} #{node['chef_client']['cron']['hour']} * * * /usr/bin/chef-solo -c /etc/chef/solo.rb"
-#end
 
 cron 'chef-run' do
   minute '*/5'
