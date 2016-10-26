@@ -16,7 +16,7 @@ task :publish do
       g.commit "new #{here} cookbook version"
       g.push g.remote 'gh-pages'
     rescue Git::GitExecuteError
-      puts 'Nothing ne to publish'
+      puts 'Nothing new to publish'
     end
   end
 end
