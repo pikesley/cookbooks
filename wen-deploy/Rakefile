@@ -6,15 +6,14 @@ task :package do
 end
 
 desc 'publish to github'
-task :publish do
+task publish: [:package] do
   require 'git'
   Dir.chdir '../' do
+    puts 'Publishing cookbook to Github'
     g = Git.open '.'
-    begin
-      g.branch 'gh-pages'
-      g.add '.'
-      g.commit "new #{here} cookbook version"
-      g.push 'origin', 'gh-pages'
-    end
+    g.branch 'gh-pages'
+    g.add '.'
+    g.commit "new #{here} cookbook version"
+    g.push 'origin', 'gh-pages'
   end
 end
