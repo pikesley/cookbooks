@@ -5,3 +5,5 @@ To get [Wen](http://sam.pikesley.org/projects/wen/) up and running from a clean 
     knife bootstrap --ssh-user pi -t template <node ip>
 
 (this relies on you having Chef installed, `gem install chef` will probably work)
+
+Your clock will now check for new _Wen_ code every five minutes, and download and install whatever it finds
