@@ -8,9 +8,11 @@ end
 desc 'publish to github'
 task :publish do
   require 'git'
-  g = Git.open '../'
-  g.branch 'gh-pages'
-  g.add '.'
-  g.commit '../' "new #{here} cookbook version"
-  g.push g.remote 'gh-pages'
+  Dir.chdir '../' do
+    g = Git.open '.'
+    g.branch 'gh-pages'
+    g.add '.'
+    g.commit '.' "new #{here} cookbook version"
+    g.push g.remote 'gh-pages'
+  end
 end
