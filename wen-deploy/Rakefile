@@ -10,9 +10,13 @@ task :publish do
   require 'git'
   Dir.chdir '../' do
     g = Git.open '.'
-    g.branch 'gh-pages'
-    g.add '.'
-    g.commit "new #{here} cookbook version"
-    g.push g.remote 'gh-pages'
+    begin
+      g.branch 'gh-pages'
+      g.add '.'
+      g.commit "new #{here} cookbook version"
+      g.push g.remote 'gh-pages'
+    rescue Git::GitExecuteError
+      puts 'Nothing ne to publish'
+    end
   end
 end
