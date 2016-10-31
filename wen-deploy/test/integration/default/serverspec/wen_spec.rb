@@ -210,7 +210,7 @@ context 'chef client' do
 
   describe file '/etc/chef/solo.rb' do
     it { should be_file }
-    its(:content) { should contain "recipe_url 'http://pikesley.org/cookbooks/wen-deploy.tgz" }
+    its(:content) { should contain "recipe_url 'http://sam.pikesley.org/cookbooks/wen-deploy.tgz" }
     its(:content) { should contain "json_attribs '/etc/chef/chef.json'" }
   end
 
